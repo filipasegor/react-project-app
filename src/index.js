@@ -1,63 +1,63 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './styles.css';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./styles.css";
 
 import { useState, useEffect, useLayoutEffect } from "react";
 import { render } from "react-dom";
 import mapboxgl from "mapbox-gl";
 
 function App() {
-  const [random, setRandom] = useState(Math.random());
-  const [coordinates, setCoordinates] = useState();
   const [lngLat, setLngLat] = useState([]);
   const [marker, setMarker] = useState(undefined);
+  const [map, setMap] = useState(undefined)
 
   mapboxgl.accessToken =
     "pk.eyJ1IjoiZmlsaXBhcyIsImEiOiJja2x4dTVoZ2kweHAxMndvNjZ2bjVxcThmIn0.RDd66wk54EmYS4TcXnRPIg";
 
-    useLayoutEffect(() => {
+  useLayoutEffect(() => {
     const map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/dark-v10',
-      center: [55.7558, 37.6173],
-      zoom: 10
-    })
+      container: "map",
+      style: "mapbox://styles/mapbox/dark-v10",
+      center: [37.6173, 55.7558],
+      zoom: 20
+    });
 
+    const marker = new mapboxgl.Marker()
+      .setLngLat([37.6173, 55.7558])
+      .addTo(map);
 
-    const market = new mapboxgl.Marker()
-    .setLngLat([55.7558, 37.6173])
-    .addTo(map)
+    setMarker(marker);
+    setMap(map);
+  }, []);
 
-    setMarker(new mapboxgl.Marker);
-
-  }, [])
-
-
+  function handleMarkerMove(e) {
+    console.log("fdsfdf");
+    marker.setLngLat(stores[e.target.value]);
+    map.flyTo({
+      center: (stores[e.target.value]),
+      speed: 3,
+      curve: 1
+    });
+  }
   const stores = {
-    km20: [55.761994, 37.610641],
-    belief: [55.733396, 37.601152],
-    brandshop: [55.767839, 37.616812]
+    km20: [37.610641, 55.761994],
+    belief: [37.601152, 55.733396],
+    brandshop: [37.616812, 55.767839]
   };
 
   return (
     <>
-
-      <button id="rerender" onClick={() => setRandom(Math.random())}>
-        Ререндер!
-      </button>
-      <div style={{height:"800px"}} id="map"></div>
+      <div style={{ height: "700px" }} id="map"></div>
 
       <div className="map-overlay">
         <h3>Выберите магазин: </h3>
-        <select onChange={e => setMarker(e.target.setLngLat[10, 20])} >
-          <option value="km20" >KM20</option>
+        <select onChange={handleMarkerMove}>
+          <option value="km20">KM20</option>
           <option value="belief">BELIEF</option>
           <option value="brandshop">BRANDSHOP</option>
         </select>
       </div>
       <div id="map"></div>
-
     </>
   );
 }
